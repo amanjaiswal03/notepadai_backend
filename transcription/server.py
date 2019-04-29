@@ -81,7 +81,7 @@ class AudioProcessorServicer(audioStream_pb2_grpc.AudioProcessorServicer):
         for word in processor.process(self.__sample_to_audio(request_iterator)):
             if self.print:
                 print(word)
-            yield string_to_response(word)
+            yield self.__string_to_response(word)
         print("Connection lost")
 
     def serve(self):
