@@ -10,6 +10,9 @@ from transcription.processor import *
 
 import pyaudio
 import sys
+import os
+
+import wave
 
 CHUNK = int(RATE / 10)  # 100ms
 
@@ -33,9 +36,9 @@ class Microphone:
     # Sends the audio stream from the microphone to the Processor object
     # and prints the result
     def start(self):
-        self.isRunning = True
         try:
-            for data in self.processor.process(self.__generator__()):
+            self.isRunning = True
+            for data in self.processor.process(self.__generator__(stream=self.mic)):
                 print(data)
         except KeyboardInterrupt:
             self.isRunning = False
@@ -43,6 +46,6 @@ class Microphone:
 
     # transforms a stream of audio data into a stream of gRPC Samples
     # (which are used by the processor, so Microphone and Server can be changed interchangeably)
-    def __generator__(self):
+    def __generator__(self, stream):
         while self.isRunning:
-            yield self.mic.read(CHUNK)
+            yield stream.read(CHUNK)
