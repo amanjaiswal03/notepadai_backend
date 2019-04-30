@@ -11,9 +11,10 @@ from transcription.processor import *
 from concurrent import futures
 import grpc
 import socket
+import time
 
 """ Constants: """
-HOST = '192.168.44.103'     # Server name
+HOST = '192.168.43.51'      # Server name
 PORT = 12345                # Server port
 FOREVER = 1000000           # Large number to keep the server running.
 WORKERS = 8                 # Max. amount of simultaneous threads
@@ -24,14 +25,14 @@ DEFAULT_LANG = "de_DE"      # The default target language
 
 # Class handling the AudioStreamServicer internally
 class Server:
-    def __init__(self, host=HOST, port=PORT, uptime=FOREVER, workers=WORKERS, argv=None):
+    def __init__(self, argv=[]):
         # Set up and start the server
-        print("Route servant - Default IP: " + host)
-        ip = self.get_valid_address(default=host)
+        print("Route servant - Default IP: " + HOST)
+        ip = self.get_valid_address(default=HOST)
 
         print("Conceive servant")
         print(ip)
-        self.servant = AudioProcessorServicer(host=ip, port=port, uptime=uptime, workers=workers, argv=argv)
+        self.servant = AudioProcessorServicer(host=ip, port=PORT, uptime=FOREVER, workers=WORKERS, argv=argv)
 
     def start(self):
         print("Enliven servant")
@@ -91,6 +92,7 @@ class AudioProcessorServicer(audioStream_pb2_grpc.AudioProcessorServicer):
 
         print("Start serving")
         self.server.start()
+        time.sleep(FOREVER)
 
     def murder(self):
         self.server.stop()
